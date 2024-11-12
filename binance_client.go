@@ -2,7 +2,9 @@ package binance_client
 
 // Develop binance client
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	bub "github.com/monkeymatt0/binance_url_builder"
@@ -18,15 +20,23 @@ func (bc *Binance) New(test bool) {
 
 }
 
-func (bc *Binance) KlinesRequest(params map[string]string) (*Binance, error) {
-	req, err := http.NewRequest(http.MethodGet, bc.Klines(params).String(), nil)
+func (bc *Binance) KlinesRequest(params map[string]string) ([]RawCandlestick, error) {
+	resp, err := http.Get(bc.Klines(params).String())
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
 	}
-	resp, err := bc.Client.Do(req)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
 	}
-	fmt.Println(resp)
-	return nil, nil
+	var klines [][]interface{}
+	rawCandlesticks := []RawCandlestick{}
+	if err := json.Unmarshal(body, &klines); err != nil {
+		fmt.Println(err)
+	}
+	temp := &RawCandlestick{}
+	for _, kline := range klines {
+		rawCandlesticks = append(rawCandlesticks, *temp.New(kline))
+	}
+	return rawCandlesticks, nil
 }
