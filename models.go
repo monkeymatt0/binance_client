@@ -29,7 +29,7 @@ func (rc *RawCandlestick) New(kline []interface{}) *RawCandlestick {
 	rc.LowPrice, _ = strconv.ParseFloat(kline[3].(string), 64)
 	rc.ClosePrice, _ = strconv.ParseFloat(kline[4].(string), 64)
 	rc.Volume, _ = strconv.ParseFloat(kline[5].(string), 64)
-	rc.CloseTime = time.Unix(int64(closeTime), 0)
+	rc.CloseTime = time.Unix(int64(closeTime/1000), 0)
 	rc.QuoteAssetVolume, _ = strconv.ParseFloat(kline[7].(string), 64)
 	rc.NumberOfTrades = kline[8].(float64)
 	rc.TakerBuyBaseAsset, _ = strconv.ParseFloat(kline[9].(string), 64)
