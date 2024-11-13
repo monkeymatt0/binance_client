@@ -36,3 +36,29 @@ func (rc *RawCandlestick) New(kline []interface{}) *RawCandlestick {
 	rc.TakerBuyQuoteAsset, _ = strconv.ParseFloat(kline[10].(string), 64)
 	return rc
 }
+
+type OrderPlacedResponse struct {
+	Symbol          string    `json:"symbol"`
+	OrderId         uint64    `json:"orderId"`
+	OrderListId     int64     `json:"orderListId"`
+	ClientOrderId   string    `json:"clientOrderId"`
+	TransactionTime time.Time `json:"transactionTime"`
+}
+
+type OrderDeletedResponse struct {
+	Symbol                  string    `json:"symbol"`
+	OrigClientOrderId       string    `json:"origClientOrderId"`
+	OrderId                 uint64    `json:"orderId"`
+	OrderListId             int64     `json:"orderListId"`
+	ClientOrderId           string    `json:"clientOrderId"`
+	TransactionTime         time.Time `json:"transactTime"`
+	Price                   string    `json:"price"`
+	OrigQty                 string    `json:"origQty"`
+	ExecutedQty             string    `json:"executedQty"`
+	CummulativeQuoteQty     string    `json:"cummulativeQuoteQty"`
+	Status                  string    `json:"status"`
+	TimeInForce             string    `json:"timeInForce"`
+	Type                    string    `json:"type"`
+	Side                    string    `json:"side"`
+	SelfTradePreventionMode string    `json:"selfTradePreventionMode"`
+}
