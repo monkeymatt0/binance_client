@@ -62,3 +62,35 @@ type OrderDeletedResponse struct {
 	Side                    string    `json:"side"`
 	SelfTradePreventionMode string    `json:"selfTradePreventionMode"`
 }
+
+type CommissionRate struct {
+	Maker  string `json:"maker"`
+	Taker  string `json:"taker"`
+	Buyer  string `json:"buyer"`
+	Seller string `json:"seller"`
+}
+
+type Balance struct {
+	Asset  string `json:"asset"`
+	Free   string `json:"free"`
+	Locked string `json:"locked"`
+}
+
+type AccountInfo struct {
+	MakerCommission            uint8          `json:"makerCommission"`
+	TakerCommission            uint8          `json:"takerCommission"`
+	BuyerCommission            uint8          `json:"buyerCommission"`
+	SellerCommission           uint8          `json:"sellerCommission"`
+	CommissionRates            CommissionRate `json:"commissionRates"`
+	CanTrade                   bool           `json:"canTrade"`
+	CanWithdraw                bool           `json:"canWithdraw"`
+	CanDeposit                 bool           `json:"canDeposit"`
+	Brokered                   bool           `json:"brokered"`
+	RequireSelfTradePrevention bool           `json:"requireSelfTradePrevention"`
+	PreventSor                 bool           `json:"preventSor"`
+	UpdateTime                 uint64         `json:"updateTime"`
+	AccountType                string         `json:"accountType"`
+	Balances                   []Balance      `json:"balances"`
+	Permissions                []string       `json:"permissions"`
+	Uid                        uint64         `json:"uid"`
+}
