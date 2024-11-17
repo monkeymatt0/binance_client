@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/gorilla/websocket"
 	bub "github.com/monkeymatt0/binance_url_builder"
 )
 
@@ -25,6 +26,7 @@ func (bc *Binance) KlinesRequest(params map[string]string) ([]RawCandlestick, er
 	if err != nil {
 		fmt.Println(err)
 	}
+	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -100,7 +102,7 @@ func (bc *Binance) AccountRequest(params map[string]string, apiKey string, secre
 	if err != nil {
 		return nil, err
 	}
-
+	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
@@ -111,4 +113,49 @@ func (bc *Binance) AccountRequest(params map[string]string, apiKey string, secre
 	}
 
 	return accountInfo, nil
+}
+
+func (bc *Binance) ListenKeyRequest(apiKey string, orderId uint64) (*Key, error) {
+	req, err := http.NewRequest(http.MethodPost, bc.ListenKey().String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("X-MBX-APIKEY", apiKey)
+
+	resp, err := bc.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	listenKey := &Key{}
+	if err := json.Unmarshal(body, listenKey); err != nil {
+		return nil, err
+	}
+	return listenKey, nil
+}
+
+func (bc *Binance) UserDataStreamSocket(listenKey string) error {
+	conn, _, err := websocket.DefaultDialer.Dial(bc.UserDataStream(listenKey), nil)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			return err
+		}
+		orderMessage := &OrderMessage{}
+		if err := json.Unmarshal(message, orderMessage); err != nil {
+			return err
+		}
+		// @todo : Analyze the order message and check the status of the order
+
+	}
 }
