@@ -43,48 +43,60 @@ func (bc *Binance) KlinesRequest(params map[string]string) ([]RawCandlestick, er
 	return rawCandlesticks, nil
 }
 
-func (bc *Binance) OrderRequest(params map[string]string, apiKey string, secret string, method string) (uint64, error) {
+// @todo : Update the response with slice
+func (bc *Binance) OrderRequest(params map[string]string, apiKey string, secret string, method string) ([]uint64, error) {
 	switch method {
 	case http.MethodPost:
 		req, err := http.NewRequest(http.MethodPost, bc.Order(params, secret).String(), nil)
 		if err != nil {
-			return 0, err
+			return []uint64{0, 0}, err
 		}
 		req.Header.Set("X-MBX-APIKEY", apiKey)
 		resp, err := bc.Do(req)
 		if err != nil {
-			return 0, err
+			return []uint64{0, 0}, err
 		}
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return 0, err
+			return []uint64{0, 0}, err
 		}
-		orderResponse := OrderPlacedResponse{}
-		if err := json.Unmarshal(body, &orderResponse); err != nil {
-			return 0, err
+		side := ""
+		for key, value := range params {
+			if key == "SIDE" {
+				side = value
+				break
+			}
 		}
-		return orderResponse.OrderId, nil
+		if side == "BUY" {
+			orderResponse := OrderPlacedResponse{}
+			if err := json.Unmarshal(body, &orderResponse); err != nil {
+				return []uint64{0, 0}, err
+			}
+			return []uint64{orderResponse.OrderId, 0}, nil
+		} else {
+			// @todo : Create the support for OCO sell
+		}
 	case http.MethodDelete:
 		req, err := http.NewRequest(http.MethodDelete, bc.Order(params, secret).String(), nil)
 		if err != nil {
-			return 0, err
+			return []uint64{0, 0}, err
 		}
 		req.Header.Set("X-MBX-APIKEY", apiKey)
 		resp, err := bc.Do(req)
 		if err != nil {
-			return 0, err
+			return []uint64{0, 0}, err
 		}
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return 0, err
+			return []uint64{0, 0}, err
 		}
 		orderDeletedResponse := OrderDeletedResponse{}
 		if err := json.Unmarshal(body, &orderDeletedResponse); err != nil {
-			return 0, err
+			return []uint64{0, 0}, err
 		}
-		return orderDeletedResponse.OrderId, nil
+		return []uint64{orderDeletedResponse.OrderId, 0}, nil
 
 	}
 
