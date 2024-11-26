@@ -99,6 +99,42 @@ type Key struct {
 	ListenKey string `json:"listenKey"`
 }
 
+type PartialOrder struct {
+	Symbol        string `json:"symbol"`
+	OrderId       int    `json:"orderId"`
+	ClientOrderId string `json:"clientOrderId"`
+}
+
+type OrderReport struct {
+	Symbol                  string `json:"symbol"`
+	OrderId                 int    `json:"orderId"`
+	OrderListId             int    `json:"orderListId"`
+	ClientOrderId           string `json:"clientOrderId"`
+	TransactionTime         int    `json:"transactionTime"`
+	Price                   string `json:"price"`
+	OrigQty                 string `json:"origQty"`
+	ExecutedQty             string `json:"executedQty"`
+	CummulativeQuoteQty     string `json:"cummulativeQuoteQty"`
+	Status                  string `json:"status"`
+	TimeInForce             string `json:"timeInForce"`
+	Type                    string `json:"type"`
+	Side                    string `json:"side"`
+	StopPrice               string `json:"stopPrice"`
+	WorkingTime             int    `json:"workingTime"`
+	IcebergTime             string `json:"icebergTime"`
+	SelfTradePreventionMode string `json:"selfTradePreventionMode"`
+}
+type OCOOrderPlaced struct {
+	OrderListId     int            `json:"orderListId"`
+	ContingencyType string         `json:"contingencyType"`
+	ListStatuType   string         `json:"listStatusType"`
+	ListOrderStatus string         `json:"listOrderStatus"`
+	TransactionTime int            `json:"transactionTime"`
+	Symbol          string         `json:"symbol"`
+	PartialOrders   []PartialOrder `json:"orders"`
+	OrderReports    []OrderReport  `json:"orderRports"`
+}
+
 type OrderMessage struct {
 	// @todo : Develop the data structure
 	/*

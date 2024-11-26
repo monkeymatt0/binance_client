@@ -75,7 +75,14 @@ func (bc *Binance) OrderRequest(params map[string]string, apiKey string, secret 
 			}
 			return []uint64{orderResponse.OrderId, 0}, nil
 		} else {
-			// @todo : Create the support for OCO sell
+			orderResponse := OCOOrderPlaced{}
+			if err := json.Unmarshal(body, &orderResponse); err != nil {
+				return []uint64{0, 0}, err
+			}
+			return []uint64{
+				uint64(orderResponse.PartialOrders[0].OrderId), // Loss order
+				uint64(orderResponse.PartialOrders[1].OrderId), // Profit order
+			}, nil
 		}
 	case http.MethodDelete:
 		req, err := http.NewRequest(http.MethodDelete, bc.Order(params, secret).String(), nil)
@@ -97,10 +104,9 @@ func (bc *Binance) OrderRequest(params map[string]string, apiKey string, secret 
 			return []uint64{0, 0}, err
 		}
 		return []uint64{orderDeletedResponse.OrderId, 0}, nil
-
 	}
 
-	return 0, nil
+	return []uint64{0, 0}, nil
 }
 
 // Need to create an object to represent the returned values
