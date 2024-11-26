@@ -1,6 +1,10 @@
+github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aNNg=
+github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/monkeymatt0/binance_url_builder v1.0.4-beta h1:1Z5ph5LNmFHj2PsyEAFHSQVkOEP2HR2Sk2ZbquyaTFw=
 github.com/monkeymatt0/binance_url_builder v1.0.4-beta/go.mod h1:12GHMMvmEi4qonRVq3Xq+k4V7a66+8D3XYk5/NKPH5o=
 github.com/monkeymatt0/binance_url_builder v1.0.6-beta h1:PjONf6O8W14LXl04q0TTCgPfLGI7/X31/L9rQdRLQ4E=
 github.com/monkeymatt0/binance_url_builder v1.0.6-beta/go.mod h1:12GHMMvmEi4qonRVq3Xq+k4V7a66+8D3XYk5/NKPH5o=
 github.com/monkeymatt0/binance_url_builder v1.0.7-beta h1:7RHUpysTXdd2DqDkRYSzJ9y0EQnsToSPr2ne+iXjmZo=
 github.com/monkeymatt0/binance_url_builder v1.0.7-beta/go.mod h1:12GHMMvmEi4qonRVq3Xq+k4V7a66+8D3XYk5/NKPH5o=
+github.com/monkeymatt0/binance_url_builder v1.0.8-beta h1:KaxqE8JzEtgVhPLceB17xCVqVxwpIrfijqTvmp6zJSw=
+github.com/monkeymatt0/binance_url_builder v1.0.8-beta/go.mod h1:12GHMMvmEi4qonRVq3Xq+k4V7a66+8D3XYk5/NKPH5o=
