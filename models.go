@@ -136,43 +136,38 @@ type OCOOrderPlaced struct {
 }
 
 type OrderMessage struct {
-	// @todo : Develop the data structure
-	/*
-		{
-		  "e": "executionReport",        // Event type
-		  "E": 1499405658658,            // Event time
-		  "s": "ETHBTC",                 // Symbol
-		  "c": "mUvoqJxFIILMdfAW5iGSOW", // Client order ID
-		  "S": "BUY",                    // Side
-		  "o": "LIMIT",                  // Order type
-		  "f": "GTC",                    // Time in force
-		  "q": "1.00000000",             // Order quantity
-		  "p": "0.10264410",             // Order price
-		  "P": "0.00000000",             // Stop price
-		  "F": "0.00000000",             // Iceberg quantity
-		  "g": -1,                       // OrderListId
-		  "C": "",                       // Original client order ID; This is the ID of the order being canceled
-		  "x": "NEW",                    // Current execution type
-		  "X": "NEW",                    // Current order status
-		  "r": "NONE",                   // Order reject reason; will be an error code.
-		  "i": 4293153,                  // Order ID
-		  "l": "0.00000000",             // Last executed quantity
-		  "z": "0.00000000",             // Cumulative filled quantity
-		  "L": "0.00000000",             // Last executed price
-		  "n": "0",                      // Commission amount
-		  "N": null,                     // Commission asset
-		  "T": 1499405658657,            // Transaction time
-		  "t": -1,                       // Trade ID
-		  "I": 8641984,                  // Ignore
-		  "w": true,                     // Is the order on the book?
-		  "m": false,                    // Is this trade the maker side?
-		  "M": false,                    // Ignore
-		  "O": 1499405658657,            // Order creation time
-		  "Z": "0.00000000",             // Cumulative quote asset transacted quantity
-		  "Y": "0.00000000",             // Last quote asset transacted quantity (i.e. lastPrice * lastQty)
-		  "Q": "0.00000000",             // Quote Order Quantity
-		  "W": 1499405658657,            // Working Time; This is only visible if the order has been placed on the book.
-		  "V": "NONE"                    // selfTradePreventionMode
-		}
-	*/
+	EventType                              string  `json:"e"`
+	EventTime                              string  `json:"E"`
+	Symbol                                 string  `json:"s"`
+	ClientOrderId                          string  `json:"c"`
+	Side                                   string  `json:"S"`
+	OrderType                              string  `json:"o"`
+	TimeInForce                            string  `json:"f"`
+	OrderQuantity                          string  `json:"q"`
+	OrderPrice                             string  `json:"p"`
+	StopPrice                              string  `json:"P"`
+	IcebergQuantity                        string  `json:"F"`
+	OrderListId                            int     `json:"g"`
+	OriginalOrderClientId                  string  `json:"C"`
+	CurrentExecutionType                   string  `json:"x"`
+	CurrentOrderStatus                     string  `json:"X"` // This is the one which needed to check the order status
+	OrderRejectReason                      string  `json:"r"`
+	OrderID                                string  `json:"i"`
+	LastExecutedQuantity                   string  `json:"l"`
+	CumulativeFilledQuantity               string  `json:"z"`
+	LastExecutedPrice                      string  `json:"L"`
+	CommonAmount                           string  `json:"n"`
+	CommonAsset                            *string `json:"N"`
+	TransactionTime                        int     `json:"T"`
+	TradeId                                int     `json:"t"`
+	Ignore                                 int     `json:"I"`
+	IsTheOrderOnTheBook                    bool    `json:"w"`
+	IsTheTradeMakerSide                    bool    `json:"m"`
+	Ignore2                                bool    `json:"M"`
+	OrderCreationTime                      int     `json:"O"`
+	CumulativeQuoteAssetTransactedQuantity string  `json:"Z"`
+	LastQuoteAssetTransactedQuantity       string  `json:"Y"`
+	QuoteOrderQuantity                     string  `json:"Q"`
+	WorkingTime                            int     `json:"W"`
+	SelfTradePrevetionMode                 string  `json:"V"`
 }

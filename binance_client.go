@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 	bub "github.com/monkeymatt0/binance_url_builder"
@@ -158,22 +159,28 @@ func (bc *Binance) ListenKeyRequest(apiKey string, orderId uint64) (*Key, error)
 	return listenKey, nil
 }
 
-func (bc *Binance) UserDataStreamSocket(listenKey string) error {
+func (bc *Binance) UserDataStreamSocket(listenKey string, validTime time.Duration) (bool, error) {
 	conn, _, err := websocket.DefaultDialer.Dial(bc.UserDataStream(listenKey), nil)
 	if err != nil {
-		return err
+		return false, err
 	}
 	defer conn.Close()
+	start := time.Now()
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
-			return err
+			return false, err
 		}
 		orderMessage := &OrderMessage{}
 		if err := json.Unmarshal(message, orderMessage); err != nil {
-			return err
+			return false, err
 		}
-		// @todo : Analyze the order message and check the status of the order
+
+		if time.Since(start) <= validTime && orderMessage.CurrentOrderStatus == string(FILLED) { // The has been executed within validTime
+			return true, nil
+		} else if time.Since(start) > validTime { // The order exeeded the maximun valid time for it's execution means I should delete the order
+			return false, nil
+		}
 
 	}
 }
