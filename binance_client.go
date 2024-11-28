@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 	bub "github.com/monkeymatt0/binance_url_builder"
@@ -43,7 +44,6 @@ func (bc *Binance) KlinesRequest(params map[string]string) ([]RawCandlestick, er
 	return rawCandlesticks, nil
 }
 
-// @todo : Update the response with slice
 func (bc *Binance) OrderRequest(params map[string]string, apiKey string, secret string, method string) ([]uint64, error) {
 	switch method {
 	case http.MethodPost:
@@ -134,7 +134,7 @@ func (bc *Binance) AccountRequest(params map[string]string, apiKey string, secre
 }
 
 func (bc *Binance) ListenKeyRequest(apiKey string, orderId uint64) (*Key, error) {
-	req, err := http.NewRequest(http.MethodPost, bc.ListenKey().String(), nil)
+	req, err := http.NewRequest(http.MethodPost, bc.ListenKey(nil).String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -158,22 +158,77 @@ func (bc *Binance) ListenKeyRequest(apiKey string, orderId uint64) (*Key, error)
 	return listenKey, nil
 }
 
-func (bc *Binance) UserDataStreamSocket(listenKey string) error {
+func (bc *Binance) UserDataStreamSocket(listenKey string, apiKey *string, validTime *time.Duration, profitOrderId, lossOrderId uint64) (bool, error) {
 	conn, _, err := websocket.DefaultDialer.Dial(bc.UserDataStream(listenKey), nil)
+	if err != nil {
+		return false, err
+	}
+	defer conn.Close()
+	start := time.Now()
+	if validTime != nil {
+
+		for {
+			_, message, err := conn.ReadMessage()
+			if err != nil {
+				return false, err
+			}
+			orderMessage := &OrderMessage{}
+			if err := json.Unmarshal(message, orderMessage); err != nil {
+				return false, err
+			}
+
+			if time.Since(start) <= *validTime && orderMessage.CurrentOrderStatus == string(FILLED) { // The has been executed within validTime
+				return true, nil
+			} else if time.Since(start) > *validTime { // The order exeeded the maximun valid time for it's execution means I should delete the order
+				return false, nil
+			}
+
+		}
+	} else {
+		start = start.Add(30 * time.Minute) // When I will call this function for selling order in worst case 25 minutes are passed, in this way the listenKey is directly refreshed
+		// Implement keep alive connection
+		for {
+			_, message, err := conn.ReadMessage()
+			if err != nil {
+				return false, err
+			}
+			orderMessage := &OrderMessage{}
+			if err := json.Unmarshal(message, orderMessage); err != nil {
+				return false, err
+			}
+
+			if time.Since(start) >= 30*time.Minute { // Keep alive connection ping for the listen key
+				bc.keepAliveListenKey(listenKey, *apiKey)
+				return true, nil
+			}
+
+			if orderMessage.CurrentOrderStatus == string(FILLED) && orderMessage.OrderID == profitOrderId {
+				return true, nil
+			} else if orderMessage.CurrentOrderStatus == string(FILLED) && orderMessage.OrderID == lossOrderId {
+				return false, nil
+			}
+
+		}
+	}
+}
+
+func (bc *Binance) keepAliveListenKey(listenKey, apiKey string) error {
+	req, err := http.NewRequest(http.MethodPut, bc.ListenKey(&listenKey).String(), nil)
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
-	for {
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			return err
-		}
-		orderMessage := &OrderMessage{}
-		if err := json.Unmarshal(message, orderMessage); err != nil {
-			return err
-		}
-		// @todo : Analyze the order message and check the status of the order
 
+	req.Header.Set("X-MBX-APIKEY", apiKey)
+
+	resp, err := bc.Do(req)
+	if err != nil {
+		return err
 	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(body))
+	return nil
 }
