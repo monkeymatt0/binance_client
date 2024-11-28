@@ -16,4 +16,8 @@ const (
 	NEW              OrderStatus = "NEW"
 	FILLED           OrderStatus = "FILLED"
 	PARTIALLY_FILLED OrderStatus = "PARTIALLY_FILLED"
+	CANCELED         OrderStatus = "CANCELED"
+	REJECTED         OrderStatus = "REJECTED"
+	EXPIRED          OrderStatus = "EXPIRED"
+	PENDING_CANCEL   OrderStatus = "PENDING_CANCEL" // this one should be rare and it is a status a bit before to be canceled
 )

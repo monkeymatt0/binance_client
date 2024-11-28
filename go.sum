@@ -10,3 +10,5 @@ github.com/monkeymatt0/binance_url_builder v1.0.8-beta h1:KaxqE8JzEtgVhPLceB17xC
 github.com/monkeymatt0/binance_url_builder v1.0.8-beta/go.mod h1:12GHMMvmEi4qonRVq3Xq+k4V7a66+8D3XYk5/NKPH5o=
 github.com/monkeymatt0/binance_url_builder v1.0.9-beta h1:8tefSyTnAgKkWpo1dIGzBBDYhr/ZriHRhTSxrM6OeUQ=
 github.com/monkeymatt0/binance_url_builder v1.0.9-beta/go.mod h1:12GHMMvmEi4qonRVq3Xq+k4V7a66+8D3XYk5/NKPH5o=
+github.com/monkeymatt0/binance_url_builder v1.0.10-beta h1:Kcs7IWWRYIng4+f1iliAmMchwHS8OxA1+3InznD7rM8=
+github.com/monkeymatt0/binance_url_builder v1.0.10-beta/go.mod h1:12GHMMvmEi4qonRVq3Xq+k4V7a66+8D3XYk5/NKPH5o=

@@ -136,8 +136,8 @@ type OCOOrderPlaced struct {
 }
 
 type OrderMessage struct {
-	EventType                              string  `json:"e"`
-	EventTime                              string  `json:"E"`
+	EventType                              string  `json:"e"` // The event type we are interested to is -------- executionReport ----------
+	EventTime                              uint64  `json:"E"`
 	Symbol                                 string  `json:"s"`
 	ClientOrderId                          string  `json:"c"`
 	Side                                   string  `json:"S"`
@@ -152,22 +152,22 @@ type OrderMessage struct {
 	CurrentExecutionType                   string  `json:"x"`
 	CurrentOrderStatus                     string  `json:"X"` // This is the one which needed to check the order status
 	OrderRejectReason                      string  `json:"r"`
-	OrderID                                string  `json:"i"`
+	OrderID                                uint64  `json:"i"` // This is important to understand which order is fired after an OCO order placed, of course only on buy supposing you will have multiple order
 	LastExecutedQuantity                   string  `json:"l"`
 	CumulativeFilledQuantity               string  `json:"z"`
 	LastExecutedPrice                      string  `json:"L"`
-	CommonAmount                           string  `json:"n"`
-	CommonAsset                            *string `json:"N"`
-	TransactionTime                        int     `json:"T"`
+	CommissionAmount                       string  `json:"n"`
+	CommissionAsset                        *string `json:"N"`
+	TransactionTime                        uint64  `json:"T"`
 	TradeId                                int     `json:"t"`
-	Ignore                                 int     `json:"I"`
+	Ignore                                 uint64  `json:"I"`
 	IsTheOrderOnTheBook                    bool    `json:"w"`
 	IsTheTradeMakerSide                    bool    `json:"m"`
 	Ignore2                                bool    `json:"M"`
-	OrderCreationTime                      int     `json:"O"`
+	OrderCreationTime                      uint64  `json:"O"`
 	CumulativeQuoteAssetTransactedQuantity string  `json:"Z"`
 	LastQuoteAssetTransactedQuantity       string  `json:"Y"`
 	QuoteOrderQuantity                     string  `json:"Q"`
-	WorkingTime                            int     `json:"W"`
+	WorkingTime                            uint64  `json:"W"`
 	SelfTradePrevetionMode                 string  `json:"V"`
 }
